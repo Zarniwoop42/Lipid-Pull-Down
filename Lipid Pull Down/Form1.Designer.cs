@@ -45,6 +45,7 @@
             this.uxPath.Name = "uxPath";
             this.uxPath.Size = new System.Drawing.Size(252, 20);
             this.uxPath.TabIndex = 0;
+            this.uxPath.TextChanged += new System.EventHandler(this.checkPath);
             // 
             // uxPathLabel
             // 
@@ -67,6 +68,7 @@
             // 
             // uxEnter
             // 
+            this.uxEnter.Enabled = false;
             this.uxEnter.Location = new System.Drawing.Point(12, 53);
             this.uxEnter.Name = "uxEnter";
             this.uxEnter.Size = new System.Drawing.Size(316, 23);

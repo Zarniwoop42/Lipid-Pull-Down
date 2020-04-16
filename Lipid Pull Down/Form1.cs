@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Lipid_Pull_Down
 {
@@ -35,7 +36,7 @@ namespace Lipid_Pull_Down
         {
             try
             {
-                if(CSVmode)
+                if (CSVmode)
                     Program.parse(uxPath.Text, this);
                 else
                     Compare.parse(uxPath.Text, this);
@@ -55,7 +56,8 @@ namespace Lipid_Pull_Down
 
             if (cur.Checked)
             {
-                if (name == "uxPD") {
+                if (name == "uxPD")
+                {
                     uxPathLabel.Text = "CSV path";
                     CSVmode = true;
                 }
@@ -65,6 +67,28 @@ namespace Lipid_Pull_Down
                     CSVmode = false;
                 }
             }
+            docheckPath();
+        }
+        private void docheckPath()
+        {
+            if (CSVmode)
+            {
+                if (File.Exists(uxPath.Text))
+                    uxEnter.Enabled = true;
+                else
+                    uxEnter.Enabled = false;
+            }
+            else
+            {
+                if (Directory.Exists(uxPath.Text) && uxPath.Text.EndsWith("LipidScriptOutput"))
+                    uxEnter.Enabled = true;
+                else
+                    uxEnter.Enabled = false;
+            }
+        }
+        private void checkPath(object sender, EventArgs e)
+        {
+            docheckPath();
         }
     }
 }
