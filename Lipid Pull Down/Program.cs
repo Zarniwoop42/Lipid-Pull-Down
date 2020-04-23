@@ -44,7 +44,7 @@ namespace Lipid_Pull_Down
                 using (var proc = new Process { StartInfo = info })
                 {
                     proc.Start();
-                } 
+                }
             }
             catch (Exception ex)
             {
@@ -64,8 +64,9 @@ namespace Lipid_Pull_Down
 
 
                 bool t = true;
-                while (t) {
-                    foreach(string l in line)
+                while (t)
+                {
+                    foreach (string l in line)
                     {
                         if (l != "")
                         {
@@ -73,12 +74,12 @@ namespace Lipid_Pull_Down
                             break;
                         }
                     }
-                    if (t) { line = csvParser.ReadFields(); } 
+                    if (t) { line = csvParser.ReadFields(); }
                 } //skip to first line with data
 
                 string[] headers = line;
-                foreach(string h in headers)
-                     headers[Array.IndexOf(headers, h)] = h.Replace("?", "D").Replace(" ", "_");
+                foreach (string h in headers)
+                    headers[Array.IndexOf(headers, h)] = h.Replace("?", "D").Replace(" ", "_");
 
                 int n = 0;
                 for (int i = 0; i < headers.Length; i++)
@@ -117,14 +118,14 @@ namespace Lipid_Pull_Down
                 }
 
                 string[] fields = csvParser.ReadFields();
-       
+
                 one.Hide();
-                    
+
                 string[] magConGroup = getSpecifics(headersStripped);
                 string[] magCon = new string[Array.IndexOf(magConGroup, "Marker")];
                 Array.Copy(magConGroup, magCon, Array.IndexOf(magConGroup, "Marker"));
                 string[] groups = new string[magConGroup.Length - magCon.Length - 1];
-                for(int i = Array.IndexOf(magConGroup, "Marker") + 1; i < magConGroup.Length; i++)
+                for (int i = Array.IndexOf(magConGroup, "Marker") + 1; i < magConGroup.Length; i++)
                 {
                     groups[i - (1 + Array.IndexOf(magConGroup, "Marker"))] = magConGroup[i];
                 }
@@ -175,7 +176,8 @@ namespace Lipid_Pull_Down
                 }
                 foreach (string field in groups)
                 {
-                    if(!magCon.Contains(field)){
+                    if (!magCon.Contains(field))
+                    {
                         sb.Append(field + ",");
                     }
                 }
@@ -198,7 +200,7 @@ namespace Lipid_Pull_Down
                             permutation += groups[i] + "+";
                         }
                     }
-                    if(mask == 0) { continue; }
+                    if (mask == 0) { continue; }
                     permutation = permutation.TrimEnd('+');
                     categories[mask - 1] = permutation;
                 }
@@ -207,10 +209,10 @@ namespace Lipid_Pull_Down
                 double[] conAvg = new double[controls.Length];
 
                 List<StringBuilder> stringbuilders = new List<StringBuilder>(combos - 1);
-                foreach(string cat in categories)
+                foreach (string cat in categories)
                 {
                     StringBuilder sbp = new StringBuilder();
-                    foreach(string s in datacats)
+                    foreach (string s in datacats)
                     {
                         sbp.Append(s + ",");
                     }
@@ -222,7 +224,7 @@ namespace Lipid_Pull_Down
 
                     string[] catheads = cat.Split('+');
 
-                    foreach(string cathead in catheads)
+                    foreach (string cathead in catheads)
                     {
                         sbp.Append(cathead + " Value,");
                         foreach (string con in controls)
@@ -254,11 +256,12 @@ namespace Lipid_Pull_Down
                                 try
                                 {
                                     avg += Convert.ToDouble(fields[di]);
-                                }catch(Exception e)
+                                }
+                                catch (Exception e)
                                 {
                                     MessageBox.Show(e.ToString());
                                 }
-                                    num++;
+                                num++;
                             }
                         }
                         if (num != 0) { avg /= num; }
@@ -266,12 +269,12 @@ namespace Lipid_Pull_Down
                         fullname += avg + ",";
                     }
                     string ingroup = "";
-                    foreach(string group in groups) 
+                    foreach (string group in groups)
                     {
                         if (controls.Contains(group)) { continue; }
 
                         double avg = 0; double num = 0;
-                        for(int di = Array.IndexOf(headers, group); di < experimentsNum + Array.IndexOf(headers, group); di++)
+                        for (int di = Array.IndexOf(headers, group); di < experimentsNum + Array.IndexOf(headers, group); di++)
                         {
                             if (fields[di] != "")
                             {
@@ -282,30 +285,30 @@ namespace Lipid_Pull_Down
                         if (num != 0) { avg /= num; }
 
                         string tempmag = ""; double[] storeavg = new double[conAvg.Length]; int count = 0;
-                        foreach(double ca in conAvg)
+                        foreach (double ca in conAvg)
                         {
                             double ca2 = ca;
                             if (ca == 0) { ca2 = 1; }
-                            tempmag += avg / ca2 +",";
+                            tempmag += avg / ca2 + ",";
                             storeavg[count] = avg / ca2;
                             count++;
                         }
                         double davg = storeavg.Min();
                         sb.Append(davg + ",");
-                        if(davg >= Convert.ToDouble(magCon[0]))
+                        if (davg >= Convert.ToDouble(magCon[0]))
                         {
                             ingroup += group + "+";
                             fullname += avg + ",";
                             fullname += tempmag;
                         }
-                        
+
                     }
                     ingroup = ingroup.TrimEnd('+');
 
                     //match ingroup string to categories[]
-                    foreach(string category in categories)
+                    foreach (string category in categories)
                     {
-                        if(ingroup == category)
+                        if (ingroup == category)
                         {
                             stringbuilders[Array.IndexOf(categories, category)].Append(fullname);
                             stringbuilders[Array.IndexOf(categories, category)].AppendLine();
@@ -329,7 +332,7 @@ namespace Lipid_Pull_Down
                 //Create secondary CSVs
                 try
                 {
-                    for (int i = 0; i<categories.Length; i++)
+                    for (int i = 0; i < categories.Length; i++)
                     {
                         string currentString = stringbuilders[i].ToString(); //check if CSVlist has clusters, otherwise do not create.
                         int newlineCount = 0; int index = -1;
@@ -379,8 +382,8 @@ namespace Lipid_Pull_Down
                             sw.WriteLine(g + " <- (excelsheet$" + g + " >= " + magCon[0] + ")");
                             cbind += g + ", ";
                         }
-                        cbind = cbind.Substring(0, cbind.Length-2);
-                        sw.WriteLine(cbind+")");
+                        cbind = cbind.Substring(0, cbind.Length - 2);
+                        sw.WriteLine(cbind + ")");
                         sw.WriteLine("v2 <- vennCounts(c2)");
                         sw.WriteLine("vennDiagram(v2)");
                     }
@@ -392,23 +395,39 @@ namespace Lipid_Pull_Down
                 }
                 try
                 {
-                    string programFiles = Environment.ExpandEnvironmentVariables("%ProgramW6432%");
-                    string programfiles = programFiles + "\\R";
-                    string[] paths = Directory.GetDirectories(programfiles, "R*", System.IO.SearchOption.TopDirectoryOnly);
-                    string binpath = paths[0] + @"\bin";
-
-                    var rpath = Directory.EnumerateFiles(binpath, "*Rscript.exe", System.IO.SearchOption.AllDirectories);
-
+                    string checkpath = System.Reflection.Assembly.GetEntryAssembly().Location;
+                    checkpath = checkpath.Remove(checkpath.LastIndexOf("\\")) + "\\Rconfig.txt";
                     string rpath2;
-
-                    if (rpath.FirstOrDefault() == null)
+                    if (File.Exists(checkpath))
                     {
-                        requestRpath();
-                        rpath2 = rpathfunc;
+                        rpath2 = File.ReadLines(checkpath).FirstOrDefault();
                     }
                     else
                     {
-                       rpath2 = rpath.FirstOrDefault();
+                        Console.WriteLine("RCONFIG NOT EXISTANT");
+
+                        string programFiles = Environment.ExpandEnvironmentVariables("%ProgramW6432%");
+                        string programfiles = programFiles + "\\R";
+                        string[] paths = Directory.GetDirectories(programfiles, "R*", System.IO.SearchOption.TopDirectoryOnly);
+                        string binpath = paths[0] + @"\bin";
+
+                        var rpath = Directory.EnumerateFiles(binpath, "*Rscript.exe", System.IO.SearchOption.AllDirectories);
+
+                        if (rpath.FirstOrDefault() == null)
+                        {
+                            requestRpath();
+                            rpath2 = rpathfunc;
+                        }
+                        else
+                        {
+                            rpath2 = rpath.FirstOrDefault();
+                        }
+                        using (StreamWriter sw = File.CreateText(checkpath))
+                        {
+                            sw.WriteLine(rpath2);
+                            sw.WriteLine("\\n");
+                            sw.WriteLine("^Path to the RScript.exe for creation of venn diagrams.");
+                        }
                     }
 
                     var scriptpath = RscriptPath;
@@ -420,19 +439,29 @@ namespace Lipid_Pull_Down
                     string rpath2 = rpathfunc;
                     var scriptpath = RscriptPath;
                     RunRScript(rpath2, scriptpath);
+
+                    string checkpath = System.Reflection.Assembly.GetEntryAssembly().Location;
+                    checkpath = checkpath.Remove(checkpath.LastIndexOf("\\")) + "\\Rconfig.txt";
+
+                    using (StreamWriter sw = File.CreateText(checkpath))
+                    {
+                        sw.WriteLine(rpath2);
+                        sw.WriteLine("");
+                        sw.WriteLine("^Path to the RScript.exe for creation of venn diagrams.");
+                    }
                 }
 
-                
+
                 Console.WriteLine("Path to output: " + outputFolder);
                 try
                 {
                     Process.Start(outputFolder);
                 }
-                catch(Exception f)
+                catch (Exception f)
                 {
                     Console.WriteLine(f);
                 }
-                
+
             }
         }
 
@@ -455,10 +484,12 @@ namespace Lipid_Pull_Down
 
         public static void enterCheck(Button ok)
         {
-            if (conC && groC && magC) {
+            if (conC && groC && magC)
+            {
                 ok.Enabled = true;
             }
-            else {
+            else
+            {
                 ok.Enabled = false;
             }
         }
@@ -542,7 +573,7 @@ namespace Lipid_Pull_Down
             group.Top = top + 5;
             specifics.Controls.Add(group);
 
-            top += 20; 
+            top += 20;
             for (int i = 0; i < headers.Length; i++)
             {
                 CheckBox r = new CheckBox();
@@ -664,15 +695,15 @@ namespace Lipid_Pull_Down
                         magC = false;
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine("Enter only numbers.");
                     magC = false;
                 }
-                enterCheck(ok); 
+                enterCheck(ok);
             };
-                specifics.Controls.Add(mag);
-            
+            specifics.Controls.Add(mag);
+
             string[] check = new string[0];
             ok.Text = "Enter";
             ok.Top = top + 4;
@@ -709,16 +740,16 @@ namespace Lipid_Pull_Down
                 }
             };
 
-           
+
 
             specifics.Controls.Add(ok);
 
             specifics.ShowDialog();
 
             int count = 0;
-            for(int i = 0; i < check.Length; i++)
+            for (int i = 0; i < check.Length; i++)
             {
-                if(check[i] != null)
+                if (check[i] != null)
                 {
                     count++;
                 }

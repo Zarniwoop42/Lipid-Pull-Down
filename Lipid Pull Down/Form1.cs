@@ -60,11 +60,13 @@ namespace Lipid_Pull_Down
                 {
                     uxPathLabel.Text = "CSV path";
                     CSVmode = true;
+                    if (uxPath.Text == "\\LipidScriptOutput") { uxPath.Text = ""; }
                 }
                 if (name == "uxCD")
                 {
                     uxPathLabel.Text = "Folder path";
                     CSVmode = false;
+                    if(uxPath.Text == "") { uxPath.Text = "\\LipidScriptOutput"; }
                 }
             }
             docheckPath();
