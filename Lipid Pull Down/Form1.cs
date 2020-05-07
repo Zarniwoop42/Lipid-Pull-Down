@@ -82,7 +82,7 @@ namespace Lipid_Pull_Down
             }
             else
             {
-                if (Directory.Exists(uxPath.Text) && uxPath.Text.EndsWith("LipidScriptOutput"))
+                if (Directory.Exists(uxPath.Text))
                     uxEnter.Enabled = true;
                 else
                     uxEnter.Enabled = false;

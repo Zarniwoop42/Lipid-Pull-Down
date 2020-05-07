@@ -59,9 +59,12 @@ namespace Lipid_Pull_Down
                                     string[] fields = csvParser.ReadFields();
                                     string name = fields[colIndex];
                                     if(name == "") { continue; }
+                                    if(name.Contains("["))
+                                        name = name.Remove(name.LastIndexOf("["));
+                                    name = name.Replace("-", " ").Trim();
                                     string location = folder.Substring(folder.LastIndexOf("\\"));
                                     location += csv.Substring(csv.LastIndexOf("\\"));
-                                    if (list.Keys.Contains(fields[colIndex]))
+                                    if (list.Keys.Contains(name))
                                     {
                                         list[name] = list[name].Append(location + ",");
                                     }

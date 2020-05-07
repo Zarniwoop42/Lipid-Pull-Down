@@ -130,7 +130,7 @@ namespace Lipid_Pull_Down
                     groups[i - (1 + Array.IndexOf(magConGroup, "Marker"))] = magConGroup[i];
                 }
 
-                //set up txt file
+                //set up output folder
                 string primaryCSV = path.Remove(path.LastIndexOf("\\")) + "/LipidScriptOutput";
                 if (!Directory.Exists(primaryCSV))
                 {
@@ -138,7 +138,7 @@ namespace Lipid_Pull_Down
                 }
                 primaryCSV += "/ (Mag " + magCon[0] + ")";
 
-                // Check if folder already exists. If yes, add number.
+                // Check if mag folder already exists. If yes, add number.
                 int run = 0;
                 while (Directory.Exists(primaryCSV))
                 {
@@ -165,6 +165,32 @@ namespace Lipid_Pull_Down
                 {
                     File.Delete(primaryCSV);
                 }
+
+                string[] controls = new string[magCon.Length - 1]; Array.Copy(magCon, 1, controls, 0, magCon.Length - 1);
+
+                //Create Configuration Record.
+                string dataFile = outputFolder + "/Configuration.txt";
+                try
+                {
+                    using (StreamWriter sw = File.CreateText(dataFile))
+                    {
+                        sw.WriteLine("|Date of run: " + DateTime.Now.ToString("M.d.yy hh:mm:ss"));
+                        sw.WriteLine("");
+                        sw.WriteLine("|Path to data: " + path);
+                        sw.WriteLine("|Magnitude: " + magCon[0]);
+                        sw.WriteLine("|Controls:");
+                        foreach(string con in controls)
+                            sw.WriteLine(con);
+                        sw.WriteLine("|Groups:");
+                        foreach (string gro in groups)
+                            sw.WriteLine(gro);
+                    }
+                }
+                catch (Exception Ex)
+                {
+                    MessageBox.Show(Ex.ToString());
+                }
+
 
                 StringBuilder sb = new StringBuilder();
 
@@ -205,7 +231,7 @@ namespace Lipid_Pull_Down
                     categories[mask - 1] = permutation;
                 }
 
-                string[] controls = new string[magCon.Length - 1]; Array.Copy(magCon, 1, controls, 0, magCon.Length - 1);
+                
                 double[] conAvg = new double[controls.Length];
 
                 List<StringBuilder> stringbuilders = new List<StringBuilder>(combos - 1);
